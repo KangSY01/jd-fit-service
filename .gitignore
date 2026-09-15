@@ -1,0 +1,13 @@
+# Vercel 빌드 산출물
+.vercel/
+
+# 로그
+*.log
+
+# OS 파일
+.DS_Store
+
+# 백업/임시 파일
+*.bak
+args_*.json
+vercel_deploy_*.json
