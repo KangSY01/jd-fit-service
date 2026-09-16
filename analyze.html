@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JD 맞춤 지원서 초안기</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+  <div class="wrap">
+    <a class="btn" href="index.html">처음으로 돌아가기</a>
+    <h1>JD 맞춤 지원서 초안기</h1>
+    <p class="sub">채용공고(회사·도메인)와 내 프로젝트 정보를 넣으면, 적합 직무 추천 → 자격요건 체크 → 추천 프로젝트 → 보완 제안 → 이력서/자기소개서용 문구 초안까지 도와줍니다.</p>
+
+    <div class="card">
+      <div class="pills" id="modePills">
+        <button class="pill active" data-mode="jobpost">① 채용공고로 시작하기</button>
+        <button class="pill" data-mode="jobguess">② 직무를 모르겠을 때 — 회사/관심사로 직무 추천부터</button>
+      </div>
+
+      <div id="jobpostSection">
+        <label class="required-mark">채용공고</label>
+        <div class="hint">공고 URL 또는 공고 텍스트를 입력하세요. 둘 다 가능합니다. URL이 안 되면 공고 텍스트를 붙여넣어 주세요.</div>
+        <textarea id="jobpost" placeholder="https://recruit.lotte.co.kr/apply/announcement/detail/...
+또는 공고 본문을 직접 붙여넣기"></textarea>
+      </div>
+
+      <div id="jobguessSection" class="none">
+        <label class="required-mark">지원하려는 회사 / 관심 도메인</label>
+        <div class="hint">예: 토스뱅크(핀테크), 신한은행(금융)처럼 회사나 관심 분야를 적어 주세요.</div>
+        <input id="company" type="text" placeholder="토스뱅크, 또는 금융/핀테크/은행 등">
+        <div class="hint required-mark" style="margin-top:10px;">내 프로젝트 정보(GitHub·노션·구글문서 링크 또는 프로젝트 설명 텍스트)도 함께 알려 주세요.</div>
+        <textarea id="guessProjects" placeholder="github.com/아이디
+또는 프로젝트 설명 텍스트
+예: pnu_notice — 부산대 CSE 공지 크롤링 자동화 봇, Python, GitHub Actions"></textarea>
+      </div>
+
+      <div id="commonSection" style="margin-top:12px;">
+        <label class="required-mark">내 프로젝트 정보</label>
+        <div class="hint">GitHub 프로필·레포 링크, 노션 링크, 구글 문서 링크, 또는 프로젝트 설명 텍스트를 입력하세요. 여러 개여도 됩니다.</div>
+        <textarea id="projects" placeholder="github.com/KangSY01
+또는 프로젝트 설명 텍스트
+예: site-safety-weather — 건설 현장 날씨·안전관리 대시보드, Flask, Python
+수상/인정 이력도 있으면 함께 적어 주세요."></textarea>
+
+        <div class="row" style="margin-top:12px;">
+          <div>
+            <label for="outputMode">출력 형태 선택</label>
+            <select id="outputMode">
+              <option value="both">이력서용 + 자기소개서용 둘 다</option>
+              <option value="resume">이력서용만</option>
+              <option value="cover">자기소개서용만</option>
+            </select>
+          </div>
+          <div>
+            <label for="jobLabel">공고 직무명(있으면)</label>
+            <input id="jobLabel" type="text" placeholder="예: NLP AI (AI기술팀)">
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-card none" id="profileSection">
+        <h4>연결 계정(내 프로필) — 지금은 로그인 후 사용</h4>
+        <div class="hint">지금은 로그인 기능을 아직 넣지 않았습니다. 이 섹션은 로그인 이후에 사용하며, 내 분석 소스가 될 연결 계정(GitHub·블로그·문서 등)을 저장해 두는 자리입니다. 지금은 입력을 직접 넣는 방식으로 분석합니다.</div>
+        <div class="row">
+          <div>
+            <label for="githubUrl">GitHub 프로필 URL</label>
+            <input id="githubUrl" type="text" placeholder="https://github.com/아이디">
+          </div>
+          <div>
+            <label for="blogUrl">블로그 URL</label>
+            <input id="blogUrl" type="text" placeholder="https://velog.io/@아이디 또는 기타 블로그">
+          </div>
+        </div>
+        <div class="row" style="margin-top:8px;">
+          <div>
+            <label for="docUrl">문서/노트 URL</label>
+            <input id="docUrl" type="text" placeholder="노션/구글문서/기타 문서 URL">
+          </div>
+          <div>
+            <button class="btn ghost" id="saveProfileBtn" style="margin-top:23px;">연결 저장</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <button class="btn" id="runBtn">분석하기</button>
+        <button class="btn ghost" id="resetBtn" style="margin-left:10px;">입력 초기화</button>
+        <div id="loadStatus" class="loading" style="margin-top:10px; min-height:18px;"></div>
+      </div>
+    </div>
+
+    <div id="resultArea" class="out">
+      <div id="errors"></div>
+      <div id="outTitle" class="card" style="background:#f6f8fa; border-color:#d6dde5;"></div>
+      <div id="outBody"></div>
+    </div>
+
+    <div class="small" style="margin-top:18px;">
+      이 결과는 그대로 제출 가능한 완성문이 아니라, 사용자가 다듬을 초안입니다. 근거 없는 추천·허위 스펙은 만들지 않습니다.
+      공고 정보가 부족하면 "공고에 명시된 정보가 부족하다"고 표시합니다. 수상 여부가 불명확하면 단정하지 않고 확인 필요로 표시합니다.
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

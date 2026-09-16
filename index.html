@@ -4,329 +4,51 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>JD 맞춤 지원서 초안기</title>
-  <style>
-    :root{ --bg:#fbfbfa; --card:#ffffff; --ink:#1f2328; --muted:#5b6470; --line:#e2e5ea; --accent:#0b6bcb; }
-    *{ box-sizing:border-box; }
-    body{ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink); margin:0; padding:24px; line-height:1.55; }
-    .wrap{ max-width:880px; margin:0 auto; }
-    h1{ font-size:20px; margin:0 0 4px; }
-    .sub{ color:var(--muted); margin:0 0 18px; }
-    .card{ background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:14px; }
-    label{ display:block; font-weight:600; margin:0 0 6px; font-size:14px; }
-    .hint{ color:var(--muted); font-size:12.5px; margin:0 0 10px; }
-    textarea, input[type=text], select{ width:100%; padding:9px 10px; border:1px solid var(--line); border-radius:8px; font-size:14px; font-family:inherit; background:#fff; color:var(--ink); }
-    textarea{ min-height:96px; resize:vertical; }
-    .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .btn{ background:var(--accent); color:#fff; border:none; border-radius:8px; padding:10px 14px; font-size:14px; cursor:pointer; }
-    .btn.ghost{ background:#fff; color:var(--accent); border:1px solid var(--line); }
-    .btn:disabled{ opacity:.55; cursor:not-allowed; }
-    .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:6px; }
-    .pill{ background:#eef2f7; border:1px solid var(--line); border-radius:999px; padding:6px 12px; font-size:13px; cursor:pointer; }
-    .pill.active{ background:var(--accent); color:#fff; border-color:var(--accent); }
-    .err{ color:#c0392b; background:#fdf0ee; border:1px solid #f0c9c3; border-radius:8px; padding:10px 12px; margin-bottom:12px; font-size:13.5px; }
-    .section{ margin:0 0 14px; }
-    .section h3{ margin:0 0 6px; font-size:15px; }
-    table{ width:100%; border-collapse:collapse; font-size:13.5px; }
-    th,td{ border:1px solid var(--line); padding:8px 9px; text-align:left; vertical-align:top; }
-    th{ background:#f6f8fa; }
-    .tag{ display:inline-block; font-size:11.5px; padding:2px 7px; border-radius:999px; background:#e7f0ff; color:#0b6bcb; margin-left:6px; }
-    .tag.bad{ background:#fdf0ee; color:#c0392b; }
-    .tag.ok{ background:#eafaf0; color:#1a7a4c; }
-    .loading{ color:var(--muted); }
-    .none{ color:var(--muted); }
-    .small{ font-size:12.5px; color:var(--muted); }
-    .out{ display:none; }
-    .out.show{ display:block; }
-    .profile-card{ background:#f6f8fa; border:1px solid var(--line); border-radius:10px; padding:12px; margin-bottom:10px; }
-    .profile-card h4{ margin:0 0 6px; font-size:14px; }
-  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/base.css">
 </head>
 <body>
   <div class="wrap">
     <h1>JD 맞춤 지원서 초안기</h1>
-    <p class="sub">채용공고(회사·도메인)와 내 프로젝트 정보를 넣으면, 적합 직무 추천 → 자격요건 체크 → 추천 프로젝트 → 보완 제안 → 이력서/자기소개서용 문구 초안까지 도와줍니다.</p>
+    <p class="sub">채용공고와 내 프로젝트 정보로 지원 준비를 도와드립니다.</p>
+    <a class="btn" href="analyze.html">분석 시작하기</a>
 
-    <div class="card">
-      <div class="pills" id="modePills">
-        <button class="pill active" data-mode="jobpost">① 채용공고로 시작하기</button>
-        <button class="pill" data-mode="jobguess">② 직무를 모르겠을 때 — 회사/관심사로 직무 추천부터</button>
+    <div class="card-row">
+      <div class="card">
+        <h3>공고 요약</h3>
+        <p>핵심 내용을 한눈에</p>
       </div>
-
-      <div id="jobpostSection">
-        <label>채용공고</label>
-        <div class="hint">공고 URL 또는 공고 텍스트를 입력하세요. 둘 다 가능합니다. URL이 안 되면 공고 텍스트를 붙여넣어 주세요.</div>
-        <textarea id="jobpost" placeholder="https://recruit.lotte.co.kr/apply/announcement/detail/...
-또는 공고 본문을 직접 붙여넣기"></textarea>
+      <div class="arrow">→</div>
+      <div class="card">
+        <h3>자격요건 체크</h3>
+        <p>충족 여부와 근거까지</p>
       </div>
-
-      <div id="jobguessSection" class="none">
-        <label>지원하려는 회사 / 관심 도메인</label>
-        <div class="hint">예: 토스뱅크(핀테크), 신한은행(금융)처럼 회사나 관심 분야를 적어 주세요.</div>
-        <input id="company" type="text" placeholder="토스뱅크, 또는 금융/핀테크/은행 등">
-        <div class="hint" style="margin-top:10px;">내 프로젝트 정보(GitHub·노션·구글문서 링크 또는 프로젝트 설명 텍스트)도 함께 알려 주세요.</div>
-        <textarea id="guessProjects" placeholder="github.com/아이디
-또는 프로젝트 설명 텍스트
-예: pnu_notice — 부산대 CSE 공지 크롤링 자동화 봇, Python, GitHub Actions"></textarea>
+      <div class="arrow">→</div>
+      <div class="card">
+        <h3>추천 프로젝트</h3>
+        <p>공고에 맞는 프로젝트 선별</p>
       </div>
-
-      <div id="commonSection" style="margin-top:12px;">
-        <label>내 프로젝트 정보</label>
-        <div class="hint">GitHub 프로필·레포 링크, 노션 링크, 구글 문서 링크, 또는 프로젝트 설명 텍스트를 입력하세요. 여러 개여도 됩니다.</div>
-        <textarea id="projects" placeholder="github.com/KangSY01
-또는 프로젝트 설명 텍스트
-예: site-safety-weather — 건설 현장 날씨·안전관리 대시보드, Flask, Python
-수상/인정 이력도 있으면 함께 적어 주세요."></textarea>
-
-        <div class="row" style="margin-top:12px;">
-          <div>
-            <label for="outputMode">출력 형태 선택</label>
-            <select id="outputMode">
-              <option value="both">이력서용 + 자기소개서용 둘 다</option>
-              <option value="resume">이력서용만</option>
-              <option value="cover">자기소개서용만</option>
-            </select>
-          </div>
-          <div>
-            <label for="jobLabel">공고 직무명(있으면)</label>
-            <input id="jobLabel" type="text" placeholder="예: NLP AI (AI기술팀)">
-          </div>
-        </div>
-      </div>
-
-      <div class="profile-card none" id="profileSection">
-        <h4>연결 계정(내 프로필) — 지금은 로그인 후 사용</h4>
-        <div class="hint">지금은 로그인 기능을 아직 넣지 않았습니다. 이 섹션은 로그인 이후에 사용하며, 내 분석 소스가 될 연결 계정(GitHub·블로그·문서 등)을 저장해 두는 자리입니다. 지금은 입력을 직접 넣는 방식으로 분석합니다.</div>
-        <div class="row">
-          <div>
-            <label for="githubUrl">GitHub 프로필 URL</label>
-            <input id="githubUrl" type="text" placeholder="https://github.com/아이디">
-          </div>
-          <div>
-            <label for="blogUrl">블로그 URL</label>
-            <input id="blogUrl" type="text" placeholder="https://velog.io/@아이디 또는 기타 블로그">
-          </div>
-        </div>
-        <div class="row" style="margin-top:8px;">
-          <div>
-            <label for="docUrl">문서/노트 URL</label>
-            <input id="docUrl" type="text" placeholder="노션/구글문서/기타 문서 URL">
-          </div>
-          <div>
-            <button class="btn ghost" id="saveProfileBtn" style="margin-top:23px;">연결 저장</button>
-          </div>
-        </div>
-      </div>
-
-      <div style="margin-top:14px;">
-        <button class="btn" id="runBtn">분석하기</button>
-        <button class="btn ghost" id="resetBtn" style="margin-left:10px;">입력 초기화</button>
-        <div id="loadStatus" class="loading" style="margin-top:10px; min-height:18px;"></div>
+      <div class="arrow">→</div>
+      <div class="card">
+        <h3>문구 초안</h3>
+        <p>이력서 자소서용 초안까지</p>
       </div>
     </div>
 
-    <div id="resultArea" class="out">
-      <div id="errors"></div>
-      <div id="outTitle" class="card" style="background:#f6f8fa; border-color:#d6dde5;"></div>
-      <div id="outBody"></div>
+    <div class="card" style="margin-top:14px;">
+      <h3>필요한 것</h3>
+      <ul>
+        <li>지원하려는 공고 URL 또는 텍스트</li>
+        <li>내 프로젝트 정보 — GitHub 링크 또는 설명</li>
+      </ul>
     </div>
 
-    <div class="small" style="margin-top:18px;">
-      이 결과는 그대로 제출 가능한 완성문이 아니라, 사용자가 다듬을 초안입니다. 근거 없는 추천·허위 스펙은 만들지 않습니다.
-      공고 정보가 부족하면 "공고에 명시된 정보가 부족하다"고 표시합니다. 수상 여부가 불명확하면 단정하지 않고 확인 필요로 표시합니다.
+    <div class="small">
+      근거 없는 추천 허위 스펙은 만들지 않습니다.<br>
+      결과는 초안이며 제출 전 직접 다듬어 주세요.
     </div>
   </div>
-
-  <script>
-    (function(){
-      const modePills = document.getElementById('modePills');
-      const jobpostSection = document.getElementById('jobpostSection');
-      const jobguessSection = document.getElementById('jobguessSection');
-      const profileSection = document.getElementById('profileSection');
-      const jobpost = document.getElementById('jobpost');
-      const company = document.getElementById('company');
-      const guessProjects = document.getElementById('guessProjects');
-      const projects = document.getElementById('projects');
-      const outputMode = document.getElementById('outputMode');
-      const jobLabel = document.getElementById('jobLabel');
-      const runBtn = document.getElementById('runBtn');
-      const resetBtn = document.getElementById('resetBtn');
-      const loadStatus = document.getElementById('loadStatus');
-      const resultArea = document.getElementById('resultArea');
-      const errors = document.getElementById('errors');
-      const outTitle = document.getElementById('outTitle');
-      const outBody = document.getElementById('outBody');
-      const githubUrl = document.getElementById('githubUrl');
-      const blogUrl = document.getElementById('blogUrl');
-      const docUrl = document.getElementById('docUrl');
-      const saveProfileBtn = document.getElementById('saveProfileBtn');
-
-      function setMode(mode){
-        const isGuess = mode === 'jobguess';
-        jobpostSection.style.display = isGuess ? 'none' : '';
-        jobguessSection.style.display = isGuess ? '' : 'none';
-        modePills.querySelectorAll('.pill').forEach(p => p.classList.toggle('active', p.dataset.mode === mode));
-        if(isGuess){ company.focus(); }
-      }
-
-      function setProfileEnabled(enabled){
-        profileSection.classList.toggle('none', !enabled);
-        saveProfileBtn.disabled = !enabled;
-      }
-
-      modePills.addEventListener('click', e=>{
-        const b = e.target.closest('.pill');
-        if(b){ setMode(b.dataset.mode); }
-      });
-
-      resetBtn.addEventListener('click', ()=>{
-        jobpost.value=''; company.value=''; guessProjects.value=''; projects.value='';
-        outputMode.value='both'; jobLabel.value=''; setMode('jobpost');
-        githubUrl.value=''; blogUrl.value=''; docUrl.value='';
-        resultArea.classList.remove('show'); errors.innerHTML=''; outBody.innerHTML=''; outTitle.textContent='';
-        loadStatus.textContent='';
-      });
-
-      saveProfileBtn.addEventListener('click', ()=>{
-        const profile = {
-          githubUrl: githubUrl.value.trim(),
-          blogUrl: blogUrl.value.trim(),
-          docUrl: docUrl.value.trim()
-        };
-        if(!profile.githubUrl && !profile.blogUrl && !profile.docUrl){
-          errors.innerHTML = '<div class="err">저장할 연결 계정이 없습니다. 하나 이상 입력해 주세요.</div>';
-          return;
-        }
-        try{
-          fetch('/api/save-profile', {
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify(profile)
-          }).then(r=>r.json()).then(d=>{
-            if(d && d.ok){
-              loadStatus.textContent = '연결 계정이 저장됐습니다.';
-              setTimeout(()=>{ loadStatus.textContent=''; }, 2500);
-            } else {
-              errors.innerHTML = '<div class="err">연결 계정 저장 중 오류가 발생했습니다.</div>';
-            }
-          }).catch(()=>{
-            errors.innerHTML = '<div class="err">연결 계정 저장 중 오류가 발생했습니다.</div>';
-          });
-        }catch(e){
-          errors.innerHTML = '<div class="err">연결 계정 저장 중 오류가 발생했습니다.</div>';
-        }
-      });
-
-      runBtn.addEventListener('click', async ()=>{
-        errors.innerHTML=''; outBody.innerHTML=''; outTitle.textContent=''; resultArea.classList.remove('show');
-        loadStatus.textContent='분석 중…';
-        const mode = modePills.querySelector('.pill.active').dataset.mode;
-        const payload = {};
-        if(mode === 'jobpost'){
-          payload.jobpost = jobpost.value.trim();
-        } else {
-          payload.company = company.value.trim();
-          payload.projects = guessProjects.value.trim();
-        }
-        payload.projects = (payload.projects || projects.value.trim());
-        payload.outputMode = outputMode.value;
-        payload.jobLabel = jobLabel.value.trim();
-
-        if(!payload.jobpost && !payload.company){
-          errors.innerHTML = '<div class="err">채용공고(URL 또는 텍스트) 또는 회사·관사를 입력해 주세요.</div>';
-          loadStatus.textContent='';
-          return;
-        }
-        if(!payload.projects){
-          errors.innerHTML = '<div class="err">내 프로젝트 정보(GitHub·노션·구글문서 링크 또는 프로젝트 설명 텍스트)를 입력해 주세요.</div>';
-          loadStatus.textContent='';
-          return;
-        }
-        try{
-          const res = await fetch('/api/analyze', {
-            method:'POST',
-            headers:{'Content-Type':'application/json'},
-            body: JSON.stringify(payload)
-          });
-          const data = await res.json();
-          if(!res.ok){
-            throw new Error(data.error || ('서버 오류: ' + res.status));
-          }
-          render(data);
-          resultArea.classList.add('show');
-          loadStatus.textContent='';
-        }catch(err){
-          errors.innerHTML = '<div class="err">분석 중 오류가 발생했습니다. ' + escapeHtml(String(err.message)) + '</div>';
-          loadStatus.textContent='';
-        }
-      });
-
-      function escapeHtml(s){
-        return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-      }
-
-      function render(data){
-        const mode = modePills.querySelector('.pill.active').dataset.mode;
-        outTitle.innerHTML = '<h3>' + escapeHtml(data.title || '분석 결과') + '</h3>' +
-          (data.summary ? '<div class="small">' + escapeHtml(data.summary) + '</div>' : '');
-        let html = '';
-        if(data.jobGuess && data.jobGuess.length){
-          html += '<div class="section"><h3>🎯 지원 가능한 직무 후보 (회사·맥락 기준)</h3>' +
-            '<div class="hint">직무가 이미 정해져 있으면 이 단계는 생략됩니다. 아래는 입력한 회사·관심사와 프로젝트 정보를 바탕으로 한 후보입니다.</div><ul>';
-          data.jobGuess.forEach(g => {
-            html += '<li><strong>' + escapeHtml(g.role) + '</strong> — ' + escapeHtml(g.reason) + '</li>';
-          });
-          html += '</ul></div>';
-        }
-        if(data.jobpostSummary){
-          html += '<div class="section"><h3>📋 공고 요약</h3><div>' + escapeHtml(data.jobpostSummary) + '</div></div>';
-        }
-        if(data.checklist && data.checklist.length){
-          html += '<div class="section"><h3>✅ 자격요건 대비 체크 (근거 포함)</h3><table><thead><tr><th style="width:34%">요건</th><th style="width:14%">상태</th><th>근거</th></tr></thead><tbody>';
-          data.checklist.forEach(r => {
-            const tagClass = r.status === '충족' ? 'ok' : (r.status === '부분충족' ? '' : 'bad');
-            const tag = r.status === '충족' ? '충족' : (r.status === '부분충족' ? '부분충족' : '부족');
-            html += '<tr><td>' + escapeHtml(r.req) + '</td><td><span class="tag ' + tagClass + '">' + tag + '</span></td><td>' + escapeHtml(r.basis || '') + '</td></tr>';
-          });
-          html += '</tbody></table></div>';
-        }
-        if(data.projects && data.projects.length){
-          html += '<div class="section"><h3>🎯 추천 프로젝트 (상위 2~3개)</h3><ol>';
-          data.projects.forEach(p => {
-            const medal = p.award ? ' 🏆' : '';
-            html += '<li><strong>' + escapeHtml(p.name) + medal + '</strong><ul><li>추천 이유: ' + escapeHtml(p.reason || '') + '</li>' +
-              (p.award ? '<li>수상/인정: ' + escapeHtml(p.award) + '</li>' : '') +
-              '</ul></li>';
-          });
-          html += '</ol></div>';
-        }
-        if(data.gaps && data.gaps.length){
-          html += '<div class="section"><h3>🔧 부족한 부분 보완 제안</h3><ul>';
-          data.gaps.forEach(g => {
-            html += '<li><strong>' + escapeHtml(g.req) + '</strong> — ' + escapeHtml(g.suggestion || '') + '</li>';
-          });
-          html += '</ul></div>';
-        }
-        if(data.phrases){
-          const resumeHtml = data.phrases.resume ? '<div class="section"><h3>✍️ 이력서용 문구 초안</h3>' +
-            '<div class="hint">팩트·역할·기술·성과 위주. 제출 전 다듬어 주세요.</div>' +
-            '<ul>' + data.projects.map(p => '<li><strong>' + escapeHtml(p.name) + '</strong><ul><li>' +
-              (data.phrases.resume[p.name] ? data.phrases.resume[p.name].map(s => '<div>' + escapeHtml(s) + '</div>').join('') : '') + '</li></ul></li>').join('') + '</ul></div>' : '';
-          const coverHtml = data.phrases.cover ? '<div class="section"><h3>✍️ 자기소개서용 문구 초안(AI 초안)</h3>' +
-            '<div class="hint">사실 정보 기반으로 생성된 초안입니다. 제출 전 반드시 사실·수치·역할·수상 여부를 확인하세요. 이 문장은 AI가 다듬은 초안이며, 그대로 제출하는 완성문이 아닙니다.</div>' +
-            '<ul>' + data.projects.map(p => '<li><strong>' + escapeHtml(p.name) + '</strong><ul><li>' +
-              (data.phrases.cover[p.name] ? data.phrases.cover[p.name].map(s => '<div>' + escapeHtml(s) + '</div>').join('') : '') + '</li></ul></li>').join('') + '</ul></div>' : '';
-          html += resumeHtml + coverHtml;
-        }
-        if(data.compare && data.compare.length){
-          html += '<div class="section"><h3>📊 공고 비교</h3><table><thead><tr><th>공고</th><th>적합도 요약</th><th>추천 우선순위</th></tr></thead><tbody>';
-          data.compare.forEach(c => {
-            html += '<tr><td>' + escapeHtml(c.posting) + '</td><td>' + escapeHtml(c.summary) + '</td><td>' + escapeHtml(c.priority) + '</td></tr>';
-          });
-          html += '</tbody></table></div>';
-        }
-        outBody.innerHTML = html;
-      }
-    })();
-  </script>
 </body>
 </html>
