@@ -12,17 +12,7 @@ function goToStep(step){
   });
 }
 
-if(document.readyState === 'loading'){
-  document.addEventListener('DOMContentLoaded', ()=>{
-    goToStep(1);
-    const nextBtn = document.getElementById('nextBtn');
-    if(nextBtn){
-      nextBtn.addEventListener('click', ()=>{
-        goToStep(2);
-      });
-    }
-  });
-} else {
+function initWizard(){
   goToStep(1);
   const nextBtn = document.getElementById('nextBtn');
   if(nextBtn){
@@ -30,4 +20,16 @@ if(document.readyState === 'loading'){
       goToStep(2);
     });
   }
+  const prevBtn = document.getElementById('prevBtn');
+  if(prevBtn){
+    prevBtn.addEventListener('click', ()=>{
+      goToStep(1);
+    });
+  }
+}
+
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', initWizard);
+} else {
+  initWizard();
 }
