@@ -17,8 +17,15 @@
   </header>
 
   <div class="wrap">
-    <a class="small" href="index.html" style="display:inline-block; margin-bottom:12px;">처음으로 돌아가기</a>
+    <a class="back-link" href="index.html">← 처음으로 돌아가기</a>
     <p class="sub">채용공고(회사·도메인)와 내 프로젝트 정보를 넣으면, 적합 직무 추천 → 자격요건 체크 → 추천 프로젝트 → 보완 제안 → 이력서/자기소개서용 문구 초안까지 도와줍니다.</p>
+
+    <div class="step-indicator">
+      <div class="dot active" id="dot1">1</div>
+      <div class="bar" id="bar1"></div>
+      <div class="dot" id="dot2">2</div>
+      <span class="label" id="stepLabel">1단계 · 공고 입력</span>
+    </div>
 
     <div class="card">
       <div id="step1" data-step="1">
@@ -28,28 +35,28 @@
         </div>
 
         <div id="jobpostSection">
-          <label class="required-mark">채용공고</label>
+          <label class="required-mark">📋 채용공고</label>
           <div class="hint">공고 URL 또는 공고 텍스트를 입력하세요. 둘 다 가능합니다. URL이 안 되면 공고 텍스트를 붙여넣어 주세요.</div>
           <textarea id="jobpost" placeholder="예: https://recruit.example.com/job/123 또는 공고 본문 붙여넣기"></textarea>
         </div>
 
         <div id="jobguessSection" class="none">
-          <label class="required-mark">지원하려는 회사 / 관심 도메인</label>
+          <label class="required-mark">🏢 지원하려는 회사 / 관심 도메인</label>
           <div class="hint">예: 토스뱅크(핀테크), 신한은행(금융)처럼 회사나 관심 분야를 적어 주세요.</div>
           <input id="company" type="text" placeholder="예: 토스뱅크, 핀테크/금융">
           <div class="hint required-mark" style="margin-top:10px;">내 프로젝트 정보(GitHub·노션·구글문서 링크 또는 프로젝트 설명 텍스트)도 함께 알려 주세요.</div>
           <textarea id="guessProjects" placeholder="예: github.com/아이디 또는 프로젝트 한 줄 설명"></textarea>
         </div>
 
-        <button id="nextBtn" class="btn">다음</button>
+        <button id="nextBtn" class="btn" style="margin-top:8px;">다음 →</button>
       </div>
 
       <div id="step2" data-step="2">
-        <!-- 바깥 카드는 card-plain(테두리·배경 없음) — 실제 카드 느낌은 split-left/split-right 각각에서 -->
         <div class="card-plain">
           <div class="split-layout">
             <div class="split-left">
-              <label class="required-mark">내 프로젝트 정보</label>
+              <h4>내 정보 입력</h4>
+              <label class="required-mark">💻 내 프로젝트 정보</label>
               <div class="hint">GitHub 프로필·레포 링크, 노션 링크, 구글 문서 링크, 또는 프로젝트 설명 텍스트를 입력하세요. 여러 개여도 됩니다.</div>
               <textarea id="projects" placeholder="예: github.com/아이디 또는 프로젝트 한 줄 설명"></textarea>
 
@@ -68,17 +75,21 @@
                 </div>
               </div>
 
-              <div style="margin-top:14px;">
-                <button class="btn ghost" id="prevBtn">이전</button>
-                <button class="btn" id="runBtn" style="margin-left:10px;">분석하기</button>
+              <div style="margin-top:16px;">
+                <button class="btn ghost" id="prevBtn">← 이전</button>
+                <button class="btn" id="runBtn" style="margin-left:10px;">✨ 분석하기</button>
                 <button class="btn ghost" id="resetBtn" style="margin-left:10px;">입력 초기화</button>
                 <div id="loadStatus" class="loading" style="margin-top:10px; min-height:18px;"></div>
               </div>
             </div>
 
             <div class="split-right">
-              <button class="btn ghost" id="copyResultBtn" style="display:none;">결과 복사</button>
-              <div id="resultPlaceholder">여기에 분석 결과가 표시됩니다</div>
+              <h4>분석 결과</h4>
+              <button class="btn ghost" id="copyResultBtn" style="display:none;">📋 결과 복사</button>
+              <div id="resultPlaceholder">
+                <span class="ph-icon">🗂️</span>
+                여기에 분석 결과가 표시됩니다
+              </div>
               <div id="resultArea" class="out">
                 <div id="errors"></div>
                 <div id="outTitle" class="card" style="background:#f6f8fa; border-color:#d6dde5;"></div>
