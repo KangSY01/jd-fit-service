@@ -13,3 +13,7 @@ args_*.json
 vercel_deploy_*.json
 
 .env
+.vercel
+.env*
+
+node_modules

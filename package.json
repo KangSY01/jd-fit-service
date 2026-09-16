@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@timely/gpt-sdk": "github:timely-hub/timely-gpt-sdk",
+    "openai": "^7.15.0"
+  }
+}
