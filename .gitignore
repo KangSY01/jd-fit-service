@@ -17,3 +17,4 @@ vercel_deploy_*.json
 .env*
 
 node_modules
+.vscode/launch.json
