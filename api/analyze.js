@@ -19,8 +19,14 @@ const {
 } = require('../lib/github');
 
 const {
-  fetchHtml
+  fetchHtml,
+  stripHtml,
+  extractJobPostImageUrl
 } = require('../lib/jobpost');
+
+const {
+  ocrImageUrl
+} = require('../lib/ocr');
 
 const {
   analyze
@@ -52,15 +58,40 @@ async function analyzeHandler(req, res){
   }
 
   const mode = body.mode || 'jobpost';
-  const jobpost = (body.jobpost || '').trim();
+  let jobpost = (body.jobpost || '').trim();
   const company = (body.company || '').trim();
   const projects = (body.projects || '').trim();
   const outputMode = body.outputMode || 'both';
   const jobLabel = (body.jobLabel || '').trim();
 
   let extractedHtml = null;
+  let imagePostLikely = false;
+  const SHORT_TEXT_LIMIT = 200;
+
   if(jobpost && (jobpost.startsWith('http://') || jobpost.startsWith('https://'))){
     extractedHtml = await fetchHtml(jobpost, 'jd-fit-mvp/1.0');
+    if(extractedHtml && extractedHtml.ok && extractedHtml.html){
+      const cleanedText = stripHtml(extractedHtml.html);
+      if(cleanedText.length < SHORT_TEXT_LIMIT){
+        imagePostLikely = true;
+        extractedHtml = {
+          ok: true,
+          html: extractedHtml.html,
+          status: extractedHtml.status,
+          shortTextLen: cleanedText.length,
+          imagePostLikely: true,
+          shortTextNote: '추출된 텍스트가 200자 미만이라 이미지 기반 공고일 가능성이 있음'
+        };
+
+        const imageUrl = extractJobPostImageUrl(extractedHtml.html);
+        if(imageUrl){
+          const ocrText = await ocrImageUrl(imageUrl);
+          if(ocrText !== null){
+            jobpost = ocrText;
+          }
+        }
+      }
+    }
   }
 
   const repoUrlsFromText = extractRepoNamesFromText(projects);
@@ -129,7 +160,8 @@ async function analyzeHandler(req, res){
     jobLabel,
     extractedHtml,
     userRepoMap,
-    repoFilesMap
+    repoFilesMap,
+    imagePostLikely
   };
 
   let result;
