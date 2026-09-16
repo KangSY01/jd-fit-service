@@ -45,42 +45,45 @@
       </div>
 
       <div id="step2" data-step="2">
-        <div class="split-layout">
-          <div class="split-left">
-            <label class="required-mark">내 프로젝트 정보</label>
-            <div class="hint">GitHub 프로필·레포 링크, 노션 링크, 구글 문서 링크, 또는 프로젝트 설명 텍스트를 입력하세요. 여러 개여도 됩니다.</div>
-            <textarea id="projects" placeholder="예: github.com/아이디 또는 프로젝트 한 줄 설명"></textarea>
+        <!-- 바깥 카드는 card-plain(테두리·배경 없음) — 실제 카드 느낌은 split-left/split-right 각각에서 -->
+        <div class="card-plain">
+          <div class="split-layout">
+            <div class="split-left">
+              <label class="required-mark">내 프로젝트 정보</label>
+              <div class="hint">GitHub 프로필·레포 링크, 노션 링크, 구글 문서 링크, 또는 프로젝트 설명 텍스트를 입력하세요. 여러 개여도 됩니다.</div>
+              <textarea id="projects" placeholder="예: github.com/아이디 또는 프로젝트 한 줄 설명"></textarea>
 
-            <div class="row" style="margin-top:12px;">
-              <div>
-                <label for="outputMode">출력 형태 선택</label>
-                <select id="outputMode">
-                  <option value="both">이력서용 + 자기소개서용 둘 다</option>
-                  <option value="resume">이력서용만</option>
-                  <option value="cover">자기소개서용만</option>
-                </select>
+              <div class="row" style="margin-top:12px;">
+                <div>
+                  <label for="outputMode">출력 형태 선택</label>
+                  <select id="outputMode">
+                    <option value="both">이력서용 + 자기소개서용 둘 다</option>
+                    <option value="resume">이력서용만</option>
+                    <option value="cover">자기소개서용만</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="jobLabel">공고 직무명(있으면)</label>
+                  <input id="jobLabel" type="text" placeholder="예: NLP AI (AI기술팀)">
+                </div>
               </div>
-              <div>
-                <label for="jobLabel">공고 직무명(있으면)</label>
-                <input id="jobLabel" type="text" placeholder="예: NLP AI (AI기술팀)">
+
+              <div style="margin-top:14px;">
+                <button class="btn ghost" id="prevBtn">이전</button>
+                <button class="btn" id="runBtn" style="margin-left:10px;">분석하기</button>
+                <button class="btn ghost" id="resetBtn" style="margin-left:10px;">입력 초기화</button>
+                <div id="loadStatus" class="loading" style="margin-top:10px; min-height:18px;"></div>
               </div>
             </div>
 
-            <div style="margin-top:14px;">
-              <button class="btn ghost" id="prevBtn">이전</button>
-              <button class="btn" id="runBtn" style="margin-left:10px;">분석하기</button>
-              <button class="btn ghost" id="resetBtn" style="margin-left:10px;">입력 초기화</button>
-              <div id="loadStatus" class="loading" style="margin-top:10px; min-height:18px;"></div>
-            </div>
-          </div>
-
-          <div class="split-right">
-            <button class="btn ghost" id="copyResultBtn" style="display:none;">결과 복사</button>
-            <div id="resultPlaceholder">여기에 분석 결과가 표시됩니다</div>
-            <div id="resultArea" class="out">
-              <div id="errors"></div>
-              <div id="outTitle" class="card" style="background:#f6f8fa; border-color:#d6dde5;"></div>
-              <div id="outBody"></div>
+            <div class="split-right">
+              <button class="btn ghost" id="copyResultBtn" style="display:none;">결과 복사</button>
+              <div id="resultPlaceholder">여기에 분석 결과가 표시됩니다</div>
+              <div id="resultArea" class="out">
+                <div id="errors"></div>
+                <div id="outTitle" class="card" style="background:#f6f8fa; border-color:#d6dde5;"></div>
+                <div id="outBody"></div>
+              </div>
             </div>
           </div>
         </div>
