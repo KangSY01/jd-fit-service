@@ -2,7 +2,6 @@
   const modePills = document.getElementById('modePills');
   const jobpostSection = document.getElementById('jobpostSection');
   const jobguessSection = document.getElementById('jobguessSection');
-  const profileSection = document.getElementById('profileSection');
   const jobpost = document.getElementById('jobpost');
   const company = document.getElementById('company');
   const guessProjects = document.getElementById('guessProjects');
@@ -13,13 +12,11 @@
   const resetBtn = document.getElementById('resetBtn');
   const loadStatus = document.getElementById('loadStatus');
   const resultArea = document.getElementById('resultArea');
+  const resultPlaceholder = document.getElementById('resultPlaceholder');
+  const copyResultBtn = document.getElementById('copyResultBtn');
   const errors = document.getElementById('errors');
   const outTitle = document.getElementById('outTitle');
   const outBody = document.getElementById('outBody');
-  const githubUrl = document.getElementById('githubUrl');
-  const blogUrl = document.getElementById('blogUrl');
-  const docUrl = document.getElementById('docUrl');
-  const saveProfileBtn = document.getElementById('saveProfileBtn');
 
   function setMode(mode){
     const isGuess = mode === 'jobguess';
@@ -29,9 +26,16 @@
     if(isGuess){ company.focus(); }
   }
 
-  function setProfileEnabled(enabled){
-    profileSection.classList.toggle('none', !enabled);
-    saveProfileBtn.disabled = !enabled;
+  function showResult(){
+    resultArea.classList.add('show');
+    if(resultPlaceholder) resultPlaceholder.style.display = 'none';
+    if(copyResultBtn) copyResultBtn.style.display = 'inline-block';
+  }
+
+  function hideResult(){
+    resultArea.classList.remove('show');
+    if(resultPlaceholder) resultPlaceholder.style.display = '';
+    if(copyResultBtn) copyResultBtn.style.display = 'none';
   }
 
   modePills.addEventListener('click', e=>{
@@ -42,43 +46,27 @@
   resetBtn.addEventListener('click', ()=>{
     jobpost.value=''; company.value=''; guessProjects.value=''; projects.value='';
     outputMode.value='both'; jobLabel.value=''; setMode('jobpost');
-    githubUrl.value=''; blogUrl.value=''; docUrl.value='';
-    resultArea.classList.remove('show'); errors.innerHTML=''; outBody.innerHTML=''; outTitle.textContent='';
+    hideResult();
+    errors.innerHTML=''; outBody.innerHTML=''; outTitle.textContent='';
     loadStatus.textContent='';
   });
 
-  saveProfileBtn.addEventListener('click', ()=>{
-    const profile = {
-      githubUrl: githubUrl.value.trim(),
-      blogUrl: blogUrl.value.trim(),
-      docUrl: docUrl.value.trim()
-    };
-    if(!profile.githubUrl && !profile.blogUrl && !profile.docUrl){
-      errors.innerHTML = '<div class="err">저장할 연결 계정이 없습니다. 하나 이상 입력해 주세요.</div>';
-      return;
-    }
-    try{
-      fetch('/api/save-profile', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify(profile)
-      }).then(r=>r.json()).then(d=>{
-        if(d && d.ok){
-          loadStatus.textContent = '연결 계정이 저장됐습니다.';
-          setTimeout(()=>{ loadStatus.textContent=''; }, 2500);
-        } else {
-          errors.innerHTML = '<div class="err">연결 계정 저장 중 오류가 발생했습니다.</div>';
-        }
+  if(copyResultBtn){
+    copyResultBtn.addEventListener('click', ()=>{
+      const text = outBody.innerText || outBody.textContent || '';
+      if(!text.trim()) return;
+      navigator.clipboard.writeText(text).then(()=>{
+        const original = copyResultBtn.textContent;
+        copyResultBtn.textContent = '복사됨';
+        setTimeout(()=>{ copyResultBtn.textContent = original; }, 1500);
       }).catch(()=>{
-        errors.innerHTML = '<div class="err">연결 계정 저장 중 오류가 발생했습니다.</div>';
+        errors.innerHTML = '<div class="err">클립보드 복사에 실패했습니다.</div>';
       });
-    }catch(e){
-      errors.innerHTML = '<div class="err">연결 계정 저장 중 오류가 발생했습니다.</div>';
-    }
-  });
+    });
+  }
 
   runBtn.addEventListener('click', async ()=>{
-    errors.innerHTML=''; outBody.innerHTML=''; outTitle.textContent=''; resultArea.classList.remove('show');
+    errors.innerHTML=''; outBody.innerHTML=''; outTitle.textContent=''; hideResult();
     loadStatus.textContent='분석 중…';
     const mode = modePills.querySelector('.pill.active').dataset.mode;
     const payload = {};
@@ -113,7 +101,7 @@
         throw new Error(data.error || ('서버 오류: ' + res.status));
       }
       render(data);
-      resultArea.classList.add('show');
+      showResult();
       loadStatus.textContent='';
     }catch(err){
       errors.innerHTML = '<div class="err">분석 중 오류가 발생했습니다. ' + escapeHtml(String(err.message)) + '</div>';
@@ -126,7 +114,6 @@
   }
 
   function render(data){
-    const mode = modePills.querySelector('.pill.active').dataset.mode;
     outTitle.innerHTML = '<h3>' + escapeHtml(data.title || '분석 결과') + '</h3>' +
       (data.summary ? '<div class="small">' + escapeHtml(data.summary) + '</div>' : '');
     let html = '';

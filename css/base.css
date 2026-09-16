@@ -1,15 +1,16 @@
-:root{ --bg:#EDF3EA; --card:#ffffff; --ink:#1f2328; --muted:#5b6470; --line:#e2e5ea; --accent:#0b6bcb; --navy:#1b2a4a; --strong:#c0392b; }
+:root{ --bg:#EDF3EA; --card:#ffffff; --ink:#1f2328; --muted:#5b6470; --line:#e2e5ea; --accent:#0b6bcb; --accent-dark:#095a9e; --navy:#1b2a4a; --strong:#c0392b; }
 *{ box-sizing:border-box; }
 body{ font-family:"Noto Sans KR",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); color:var(--ink); margin:0; padding:0; line-height:1.55; }
-.wrap{ max-width:880px; margin:0 auto; padding:24px; }
+.wrap{ max-width:1200px; margin:0 auto; padding:24px; }
 
 .topbar{ background:var(--navy); color:#fff; display:flex; justify-content:space-between; align-items:center; padding:16px 24px; }
-.topbar .brand{ font-weight:700; font-size:25px; color:#fff; }
+.topbar .brand{ font-weight:700; font-size:20px; color:#fff; }
 .topbar .btn-login{ background:var(--strong); color:#fff; padding:8px 16px; border-radius:8px; border:none; cursor:pointer; font-size:14px; font-family:inherit; text-decoration:none; display:inline-block; }
+.topbar .btn-login:hover{ background:#a5332e; }
 
 h1{ font-size:20px; margin:0 0 4px; font-weight:700; }
 .sub{ color:var(--muted); margin:0 0 18px; }
-.card{ background:var(--card); border:1px solid #b9d9c2; border-radius:10px; padding:16px; margin-bottom:14px; }
+.card{ background:var(--card); border:1px solid #b9d9c2; border-radius:10px; padding:16px; margin-bottom:14px; box-shadow:0 2px 8px rgba(0,0,0,0.06); }
 
 .card-row{ display:flex; align-items:stretch; gap:8px; flex-wrap:wrap; }
 .card-row .card{ flex:1 1 140px; margin-bottom:0; }
@@ -26,7 +27,9 @@ textarea, input[type=text], select{ width:100%; padding:9px 10px; border:1px sol
 textarea{ min-height:96px; resize:vertical; }
 .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .btn{ background:var(--accent); color:#fff; border:none; border-radius:8px; padding:10px 14px; font-size:14px; cursor:pointer; text-decoration:none; display:inline-block; }
+.btn:hover{ background:var(--accent-dark); }
 .btn.ghost{ background:#fff; color:var(--accent); border:1px solid var(--line); }
+.btn.ghost:hover{ background:#f2f6fa; }
 .btn:disabled{ opacity:.55; cursor:not-allowed; }
 .pills{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:6px; }
 .pill{ background:#eef2f7; border:1px solid var(--line); border-radius:999px; padding:6px 12px; font-size:13px; cursor:pointer; }
@@ -48,7 +51,18 @@ th{ background:#f6f8fa; }
 .profile-card{ background:#f6f8fa; border:1px solid var(--line); border-radius:10px; padding:12px; margin-bottom:10px; }
 .profile-card h4{ margin:0 0 6px; font-size:14px; }
 
+/* 2단 레이아웃 (프로젝트 정보 입력 / 분석 결과) */
+.split-layout{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+.split-left, .split-right{ background:var(--card); border:1px solid #b9d9c2; border-radius:10px; padding:16px; box-shadow:0 2px 8px rgba(0,0,0,0.06); position:relative; }
+.split-right{ height:600px; overflow-y:auto; }
+#resultPlaceholder{ color:var(--muted); display:flex; align-items:center; justify-content:center; height:100%; text-align:center; font-size:14px; }
+.split-right .out.show ~ #resultPlaceholder,
+.split-right #resultArea.show + #resultPlaceholder{ display:none; }
+#copyResultBtn{ position:sticky; top:0; float:right; z-index:2; }
+
 @media (max-width:640px){
   .card-row{ flex-direction:column; }
   .arrow{ transform:rotate(90deg); padding:4px 0; }
+  .split-layout{ grid-template-columns:1fr; }
+  .split-right{ height:420px; }
 }
